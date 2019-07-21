@@ -1,0 +1,104 @@
+openapi: "3.0.0"
+info:
+  description: "This is xzvf's unofficial API documentation for the social network DevRant"
+  version: "0.0.1"
+  title: "DevRant API"
+  contact:
+    email: "xzvf@su-root.cc"
+  license:
+    name: "GPL v3"
+    url: "https://www.gnu.org/licenses/gpl-3.0.en.html"
+servers: 
+  - url: "https://devrant.com/api"
+tags:
+- name: "user"
+  description: "Everything to do with user accounts"
+paths:
+  /users:
+    post:
+      description: "Register a new user"
+      tags:
+      - "user"
+      responses:
+        200:
+          description: "Always returns 200. Check the \"success\" \"error\" JSON values for the error message. On error the \"error_field\" contains the problematic field. On success it returns an authToken in the"
+      requestBody:
+        description: "The parameters required for registering a user"
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/constant'
+                - $ref: '#/components/schemas/register'
+          application/x-www-form-urlencoded:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/constant'
+                - $ref: '#/components/schemas/register'
+
+components:
+  schemas:
+    constant:
+      description: "This constant value always need to be sent along."
+      required: 
+        - app
+        - plat
+      properties:
+        plat:
+          type: integer
+          enum:
+            - 2
+        app:
+          type: integer
+          enum:
+            - 3
+    register:
+      type: object
+      required:
+        - username
+        - password
+        - email
+        - type
+      properties:
+        email:
+          type: string
+          example: "devrant.api@example.com"
+        username:
+          type: string
+          example: "devAPI"
+        password:
+          type: string
+          example: "P@$$w0rd!1sAt4rriblePassword"
+        type:
+          type: integer
+          enum:
+            - 1
+    auth_token:
+      type: object
+      description: "The auth token used for authenticating requests. key, token_id and user_id need to be sent to authenticate a request."
+      required: 
+        - key
+        - token_id
+        - user_id
+      properties:
+        key:
+          type: string
+          example: "abcdefghijklmnopqrstuvwxyz0123456789ABCD"
+          description: "The api key. Sending this alone doesn't work."
+        token_id:
+          type: integer
+          example: 1234567
+          description: "Id of the auth token."
+        user_id:
+          type: integer
+          example: 2345678
+          description: "Id of the current user."
+        expire_time:
+          type: integer
+          example: 1566308541
+          description: "Timestamp when this API key expires. This is only sent along when requesting the api key (login/register)"
+        
+        
+    login:
+      type: object
