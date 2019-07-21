@@ -21,7 +21,46 @@ paths:
       - "user"
       responses:
         200:
-          description: "Always returns 200. Check the \"success\" \"error\" JSON values for the error message. On error the \"error_field\" contains the problematic field. On success it returns an authToken in the"
+          description: "Always returns 200. Check the \"success\" \"error\" JSON values for the error message. On error the \"error_field\" contains the problematic field. On success it returns an auth_token object."
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                        enum:
+                          - true
+                      auth_token:
+                        type: object
+                        properties:
+                          expire_time:
+                            type: integer
+                            example: 1566308541
+                          id:
+                            type: integer
+                            example: 1234567
+                          key:
+                            type: string
+                            example: "abcdefghijklmnopqrstuvwxyz0123456789ABCD"
+                          user_id:
+                            type: integer
+                            example: 2345678
+                  - type: object
+                    properties:
+                      success:
+                        type: boolean
+                        enum:
+                          - false
+                      error:
+                        type: string
+                        example: "Your username must be between 4 and 15 characters."
+                      error_field:
+                        type: string
+                        example: "username"
+                
+          
       requestBody:
         description: "The parameters required for registering a user"
         required: true
